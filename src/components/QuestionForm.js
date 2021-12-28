@@ -1,53 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 import { reduxForm, Field } from "redux-form";
 
-class QuestionForm extends React.Component {
-  state = {
-    option1: "",
-    option2: "",
-  };
-  handleChange1 = (e) => {
-    this.setState({
-      option1: e.target.value,
-    });
-  };
-  handleChange2 = (e) => {
-    this.setState({
-      option2: e.target.value,
-    });
-  };
-  render() {
-    const { onSubmit } = this.props;
-    return (
-      <form
-        onSubmit={(e) => onSubmit(e, this.state.option1, this.state.option2)}
-      >
-        <div>
-          <label>
-            <Field
-              component="input"
-              name="option-one"
-              type="text"
-              value="optionOne"
-              onChange={this.handleChange1}
-            />
-          </label>
-          <div>or</div>
-          <label>
-            <Field
-              component="input"
-              name="option-two"
-              type="input"
-              value="optionTwo"
-              onChange={this.handleChange2}
-            />
-          </label>
-        </div>
-        <button type="submit">Submit</button>
-      </form>
-    );
-  }
-}
+let QuestionForm = (props) => {
+  const [option1, setOption1] = useState("");
+  const [option2, setOption2] = useState("");
+
+  const handleChange1 = (e) => setOption1(e.target.value);
+
+  const handleChange2 = (e) => setOption2(e.target.value);
+
+  const { onSubmit } = props;
+  return (
+    <form onSubmit={(e) => onSubmit(e, option1, option2)}>
+      <div>
+        <label>
+          <Field
+            component="input"
+            name="option-one"
+            type="text"
+            value="optionOne"
+            onChange={handleChange1}
+          />
+        </label>
+        <div>or</div>
+        <label>
+          <Field
+            component="input"
+            name="option-two"
+            type="input"
+            value="optionTwo"
+            onChange={handleChange2}
+          />
+        </label>
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
 
 QuestionForm = reduxForm({
   form: "options-form",

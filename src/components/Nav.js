@@ -1,59 +1,60 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { removeAuthedUser } from "../actions/authedUser";
+import Signin from "./Signin";
 
-class Nav extends React.Component {
-  handleClick = () => {
-    this.props.dispatch(removeAuthedUser());
-  };
-  render() {
-    return (
-      <nav className="nav">
-        <ul>
-          <li>
-            <Link to="/" activeclassname="active">
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link to="/add" activeclassname="active">
-              New Question
-            </Link>
-          </li>
-          <li>
-            <Link to="/leaderboard" activeclassname="active">
-              LeaderBoard
-            </Link>
-          </li>
-          <li>
-            <Link to="/" onClick={this.handleClick}>
-              logout
-            </Link>
-          </li>
-          {this.props.username !== null && (
-            <li>
-              <Link
-                style={{
-                  pointerEvents: "none",
-                  color: "black",
-                  textDecoration: "none",
-                }}
-                to="/"
-              >
-                {`hello, ${this.props.username}`}
-              </Link>
-            </li>
-          )}
-        </ul>
-      </nav>
-    );
-  }
-}
-function mapStateToProps({ authedUser, users }) {
-  return {
-    username: authedUser === null ? null : users[authedUser].name,
-  };
-}
+const Nav = () => {
+  const dispatch = useDispatch();
+  const { username } = useSelector((state) => {
+    return {
+      username:
+        state.authedUser === null || state.authedUser === ""
+          ? null
+          : state.users[state.authedUser].name,
+    };
+  }, shallowEqual);
 
-export default connect(mapStateToProps)(Nav);
+  const handleClick = () => dispatch(removeAuthedUser());
+  return (
+    <nav className="nav">
+      <ul>
+        <li>
+          <Link to="/" activeclassname="active">
+            Home
+          </Link>
+        </li>
+        <li>
+          <Link to="/add" activeclassname="active">
+            New Question
+          </Link>
+        </li>
+        <li>
+          <Link to="/leaderboard" activeclassname="active">
+            LeaderBoard
+          </Link>
+        </li>
+        <li>
+          <Link to="/" onClick={handleClick}>
+            logout
+          </Link>
+        </li>
+        {username !== null && (
+          <li>
+            <Link
+              style={{
+                pointerEvents: "none",
+                color: "black",
+                textDecoration: "none",
+              }}
+              to="/"
+            >
+              {`hello, ${username}`}
+            </Link>
+          </li>
+        )}
+      </ul>
+    </nav>
+  );
+};
+export default Nav;

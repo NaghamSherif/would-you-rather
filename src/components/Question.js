@@ -1,12 +1,21 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-function Question(props) {
-  const { question, user, id } = props;
-
-  return (
+const Question = (props) => {
+  const { id } = props;
+  const { question, user } = useSelector((state) => {
+    const question = state.questions[props.id];
+    const user = state.users[question.author];
+    return {
+      question,
+      user,
+    };
+  });
+  return user === undefined ? (
+    <div>error</div>
+  ) : (
     <Card className="question-card">
       <Card.Title>{`${user.name} asked:`}</Card.Title>
       <div style={{ display: "inline-flex" }}>
@@ -20,15 +29,5 @@ function Question(props) {
       </div>
     </Card>
   );
-}
-
-function mapStateToProps({ questions, users }, { id }) {
-  const question = questions[id];
-  const user = users[question.author];
-  return {
-    question,
-    user,
-  };
-}
-
-export default connect(mapStateToProps)(Question);
+};
+export default Question;
